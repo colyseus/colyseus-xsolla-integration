@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colyseus + Xsolla Payments Integration</title>
+
+    <!-- Colyseus Client SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/colyseus.js@^0.16.0/dist/colyseus.js"></script> 
+
+</head>
+<body>
+
+    <h1>Colyseus + Xsolla Payments Integration</h1>
+    <p>This is a simple integration of Colyseus and Xsolla.</p>
+    <p>It allows you to test the webhook endpoint locally.</p>
+
+    <!-- Initialization script -->
+    <script>
+        const client = new Colyseus.Client('http://localhost:2567');
+
+        function getPaymentTokenAndOpenWidget() {
+            // Prevent multiple clicks
+            embedWidgetButton.disabled = true;
+
+            client.http.post("/xsolla/shop/token").then((response) => {
+                XPayStationWidget.init({
+                    access_token: response.data.token,
+                    sandbox: response.data.sandbox 
+                });
+                XPayStationWidget.open();
+
+            }).finally(() => {
+                // Enable button again after request is finished
+                embedWidgetButton.disabled = false;
+            });
+        }
+
+        function openNewWindow() {
+            // Prevent multiple clicks
+            newWindowButton.disabled = true;
+
+            client.http.post("/xsolla/shop/token").then((response) => {
+                window.open(`https://${response.data.sandbox ? "sandbox-" : ""}secure.xsolla.com/paystation4/?token=${response.data.token}`, "_blank");
+
+            }).finally(() => {
+                // Enable button again after request is finished
+                newWindowButton.disabled = false;
+            });
+        }
+
+        function openIframe() {
+            // Prevent multiple clicks
+            iframeButton.disabled = true;
+
+            client.http.post("/xsolla/shop/token").then((response) => {
+                window.addEventListener('message', postMessageListener);
+
+                var iframe = document.createElement("iframe");
+                iframe.src = `https://${response.data.sandbox ? "sandbox-" : ""}secure.xsolla.com/paystation4/?token=${response.data.token}`;
+                iframe.width = "800";
+                iframe.height = "930";
+                iframe.allow = "clipboard-read; clipboard-write; payment";
+                document.body.appendChild(iframe);
+
+            }).finally(() => {
+                // Enable button again after request is finished
+                iframeButton.disabled = false;
+            });
+        }
+
+        var postMessageListener = (event) => {
+            if (!event.origin.endsWith(".xsolla.com")) {
+                // Skip messages from other origins except Xsolla
+                return;
+            }
+
+            const eventData = JSON.parse(event.data);
+            switch (eventData.command) {
+                case 'open-paystation':
+                    console.log('Paystation UI opened', eventData.data);
+                    break;
+                
+                case 'add_saved_account':
+                    console.log('Payment account saved successfully', eventData.data);
+                    break;
+                
+                case 'add_saved_account_error':
+                    console.log('Error saving payment account:', eventData.data);
+                    break;
+                
+                case 'cancel_save_account':
+                    console.log('User cancelled saving payment account', eventData.data);
+                    break;
+                
+                case 'cart_display':
+                    console.log('Payment UI displayed as columns:', eventData.data);
+                    break;
+                
+                case 'change-status':
+                    console.log('Payment status changed:', eventData.data);
+                    break;
+                
+                case 'choose-method':
+                    console.log('Payment method chosen:', eventData.data);
+                    break;
+                
+                case 'click-custom-package-continue':
+                    console.log('Continue button clicked for custom package', eventData.data);
+                    break;
+                
+                case 'click-comment':
+                    console.log('Comment button clicked', eventData.data);
+                    break;
+                
+                case 'click-buy-package':
+                    console.log('Buy Package button clicked', eventData.data);
+                    break;
+                
+                case 'click-buy-gift-package':
+                    console.log('Buy Gift Package button clicked', eventData.data);
+                    break;
+                
+                case 'click-buy-gift-custom-package':
+                    console.log('Buy Gift Custom Package button clicked', eventData.data);
+                    break;
+                
+                case 'click-btn-pay':
+                    console.log('Pay Now button clicked', eventData.data);
+                    break;
+                
+                case 'click-btn-continue':
+                    console.log('Continue button clicked for subscription', eventData.data);
+                    break;
+                
+                case 'click-btn-apply':
+                    console.log('Apply button clicked for coupon', eventData.data);
+                    break;
+                
+                case 'click-btn-activate':
+                    console.log('Activate button clicked for game key', eventData.data);
+                    break;
+                
+                case 'click-btn-accept':
+                    console.log('Accept button clicked for digital content', eventData.data);
+                    break;
+                
+                case 'create-invoice':
+                    console.log('Transaction created:', eventData.data);
+                    break;
+                
+                case 'dimensions':
+                    console.log('Payment UI dimensions:', eventData.data);
+                    break;
+                
+                case 'error':
+                    console.log('Payment error:', eventData.data);
+                    break;
+                
+                case 'external-link-open':
+                    console.log('External link opened:', eventData.data.url);
+                    break;
+                
+                case 'external-payment-open':
+                    console.log('External payment system opened', eventData.data);
+                    break;
+                
+                case 'focus-change':
+                    console.log('Focus changed:', eventData.data);
+                    break;
+                
+                case 'open-payment-credit-card':
+                    console.log('Credit card payment UI opened', eventData.data);
+                    break;
+                
+                case 'open-payment-saved-methods':
+                    console.log('Saved payment methods page opened', eventData.data);
+                    break;
+                
+                case 'open-payment-payment-methods':
+                    console.log('Payment methods list opened', eventData.data);
+                    break;
+                
+                case 'open-status':
+                    console.log('Payment status page opened', eventData.data);
+                    break;
+                
+                case 'open-status-processing':
+                    console.log('Processing payment status page opened', eventData.data);
+                    break;
+                
+                case 'open-status-error':
+                    console.log('Error payment status page opened', eventData.data);
+                    break;
+                
+                case 'open-status-success':
+                    console.log('Success payment status page opened', eventData.data);
+                    break;
+                
+                case 'order-status':
+                    console.log('Order status changed to done:', eventData.data);
+                    break;
+                
+                case 'resize':
+                    console.log('Payment UI resized:', eventData.data);
+                    break;
+                
+                case 'show-error-page':
+                    console.log('Error page shown:', eventData.data);
+                    break;
+                
+                case 'status':
+                    console.log('Payment status page accessed:', eventData.data);
+                    break;
+                
+                case 'status-redeem':
+                    console.log('Coupon redemption in payment form', eventData.data);
+                    break;
+                
+                case 'close':
+                    console.log('Payment UI closed', eventData.data);
+
+                    window.removeEventListener('message', postMessageListener);
+                    break;
+                
+                default:
+                    console.log('Unknown command:', eventData.command, eventData.data);
+                    break;
+            }
+        }
+
+    </script>
+
+    <!-- New Windows -->
+    <button id="newWindowButton" onclick="openNewWindow()">Open Payment UI in New Window</button>
+    
+    <!-- Include Xsolla Widget -->
+    <script>
+        var s = document.createElement('script');
+        s.type = "text/javascript";
+        s.async = true;
+        s.src = "https://cdn.xsolla.net/payments-bucket-prod/embed/1.5.0/widget.min.js";
+        var head = document.getElementsByTagName('head')[0];
+        head.appendChild(s);
+    </script>
+    <button id="embedWidgetButton" onclick="getPaymentTokenAndOpenWidget()">Open Pay Station Embed Widget</button>
+
+    <!-- Iframe -->
+    <button id="iframeButton" onclick="openIframe()">Open Payment UI in Iframe</button>
+
+</body>
+</html>

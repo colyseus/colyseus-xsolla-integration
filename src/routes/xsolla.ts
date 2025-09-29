@@ -1,16 +1,16 @@
-import { Request, Response } from 'express';
-import * as crypto from 'crypto';
 import express from 'express';
+import * as crypto from 'crypto';
+import { type Response } from 'express';
+import { type Request, auth } from "@colyseus/auth";
 
+const projectId = process.env.XSOLLA_PROJECT_ID;
+const merchantId = process.env.XSOLLA_MERCHANT_ID;
+const apiKey = process.env.XSOLLA_API_KEY;
 const webhookSecretKey = process.env.XSOLLA_WEBHOOK_SECRET_KEY;
 
 export const xsolla = express.Router();
 
-xsolla.post('/shop/token', express.json(), async (req: Request, res: Response) => {
-    const merchantId = Number(process.env.XSOLLA_MERCHANT_ID);
-    const projectId = Number(process.env.XSOLLA_PROJECT_ID);
-    const apiKey = process.env.XSOLLA_API_KEY;
-
+xsolla.post('/shop/token', express.json(), auth.middleware(), async (req: Request, res: Response) => {
     // TODO: do not forget to set "sandbox" to "false" when going live
     const sandbox = (process.env.NODE_ENV !== "production");
 
@@ -19,7 +19,7 @@ xsolla.post('/shop/token', express.json(), async (req: Request, res: Response) =
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Basic ' + Buffer.from(`${merchantId}:${apiKey}`).toString('base64')
+                'Authorization': 'Basic ' + Buffer.from(`${projectId}:${apiKey}`).toString('base64')
                 // 'X-User-Ip': '127.0.0.1'
             },
             body: JSON.stringify({
@@ -35,7 +35,7 @@ xsolla.post('/shop/token', express.json(), async (req: Request, res: Response) =
                 purchase: {
                     items: [
                         {
-                            // Retrieve the SKU from "Items Catalog -> Virtual Items"
+                            // Use the SKU from "Items Catalog -> Virtual Items"
                             sku: "battlepass-season1",
                             quantity: 1
                         },
@@ -44,7 +44,6 @@ xsolla.post('/shop/token', express.json(), async (req: Request, res: Response) =
                 sandbox,
                 settings: {
                     language: "en",
-                    // external_id: "AABBCCDD01",
                     currency: "USD",
                     // payment_method: 1380,
                     return_url: "http://localhost:2567/",
@@ -80,82 +79,35 @@ xsolla.post('/shop/token', express.json(), async (req: Request, res: Response) =
         console.error('Error creating Xsolla payment token:', error);
         res.status(500).json({ error: { code: "INTERNAL_SERVER_ERROR", message: "Failed to create payment token" } });
     }
+});
 
-    // // Allow to provide "settings.ui.size" from query parameter
-    // const size = req.body.size || "medium";
-    // /**
-    //  * For more information about creating tokens,
-    //  * please read https://developers.xsolla.com/api/pay-station/operation/create-token/
-    //  */
-    // const xsollaTokenResponse = await fetch(
-    //     `https://api.xsolla.com/merchant/v2/merchants/${merchantId}/token`,
-    //     {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             Authorization: 'Basic ' + Buffer.from(`${merchantId}:${apiKey}`).toString('base64')
-    //         },
-    //         body: JSON.stringify({
-    //             settings: {
-    //                 currency: 'USD',
-    //                 project_id: projectId,
-    //                 ui: { size },
+xsolla.get("/invoice/:invoiceId", async (req: Request, res: Response) => {
+    const invoiceId = req.params.invoiceId;
 
-    //                 /**
-    //                  * Use "sandbox" for testing
-    //                  */
-    //                 mode: "sandbox", 
+    const response = await fetch(`https://api.xsolla.com/merchant/v2/merchants/${merchantId}/reports/transactions/${invoiceId}/details`, {
+        method: 'GET',
+        headers: {
+            Authorization: 'Basic ' + Buffer.from(`${merchantId}:${apiKey}`).toString('base64')
+        }
+    });
 
-    //                 /**
-    //                  * You need to pass either the user country or the user’s IP address when requesting the payment token. Using these data, the system determines the purchase currency, the language for localizing the payment interface and calculates taxes.
-    //                  */
-    //                 language: 'en',
-    //             },
-
-    //             user: {
-    //                 email: {
-    //                     value: 'email@example.com'
-    //                 },
-    //                 id: { value: 'user_2' },
-    //                 name: { value: 'John Smith' }
-    //             }
-    //         })
-    //     }
-    // );
-
-    // // If the response is not 200, return the error
-    // if (xsollaTokenResponse.status !== 200) {
-    //     const contentType = xsollaTokenResponse.headers.get("content-type") || "";
-    //     let response = (contentType.includes("application/json"))
-    //         ? await xsollaTokenResponse.json()
-    //         : await xsollaTokenResponse.text();
-
-    //     if (response?.extended_message?.property_errors) {
-    //         console.log(response.extended_message.property_errors);
-    //     }
-
-    //     console.log({response})
-
-    //     res.status(xsollaTokenResponse.status).send(response);
-    //     return;
-    // }
-
-    // res.json(await xsollaTokenResponse.json());
+    const data = await response.json();
+    res.status(response.status).json(data);
 });
 
 xsolla.post('/webhook', (req: Request, res: Response) => {
-    // req.body is undefined unless another middleware sets it
+    // Read raw body for signature verification
     let rawBody = '';
     req.on('data', chunk => rawBody += chunk);
     req.on('end', () => {
         try {
-            console.log("rawData:", rawBody);
             // Verify the webhook signature
             if (!verifySignature(req, rawBody)) {
                 console.error('Invalid webhook signature');
                 res.status(401).json({ error: { code: "INVALID_SIGNATURE" } });
                 return;
             }
+
             // Process the webhook 
             processWebhook(JSON.parse(rawBody), res);
         } catch (err: any) {
@@ -170,9 +122,7 @@ xsolla.post('/webhook', (req: Request, res: Response) => {
  */
 function verifySignature(req: Request, rawBody: string): boolean {
     const signature = req.headers.authorization;
-    if (!signature) {
-        return false; 
-    }
+    if (!signature) { return false; }
 
     // Create expected signature
     const expectedSignature = "Signature " + crypto
@@ -192,9 +142,10 @@ function processWebhook(data: any, res: Response): void {
     switch (data.notification_type) {
 
         case "user_validation": {
-            // handleUserValidation(webhookData);
-
-            if (data.user.id.startsWith("test_")) {
+            const isValid = handleUserValidation(data);
+            console.log("User Validation:", { isValid });
+            
+            if (!isValid) {
                 res.status(400).json({ error: { code: "INVALID_USER" } });
                 return;
             }
@@ -224,6 +175,21 @@ function processWebhook(data: any, res: Response): void {
 }
 
 /**
+ * Handle user validation notification
+ */
+function handleUserValidation(webhookData: any): boolean {
+    const userId = webhookData.user?.id;
+    const email = webhookData.user?.email;
+
+    // TODO: query the user from the database
+    console.log("User Validation:");
+    console.log(`User ID: ${userId}`);
+    console.log("Full webhook data:", JSON.stringify(webhookData, null, 2));
+
+    return !userId.includes("test_");
+}
+
+/**
  * Handle order paid notification
  */
 function handleOrderPaid(webhookData: any): void {
@@ -237,7 +203,6 @@ function handleOrderPaid(webhookData: any): void {
     console.log(`Order ID: ${orderId}`);
     console.log(`Amount: ${price}`);
     console.log(`Items: ${skus}`);
-    console.log("Full webhook data:", JSON.stringify(webhookData, null, 2));
 
     // TODO: Implement your game's logic for handling successful purchases
     // Examples:

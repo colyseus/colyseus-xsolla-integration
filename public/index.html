@@ -8,18 +8,336 @@
     <!-- Colyseus Client SDK -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/colyseus.js@^0.16.0/dist/colyseus.js"></script> 
 
-</head>
-<body>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
-    <h1>Colyseus + Xsolla Payments Integration</h1>
-    <p>This is a simple integration of Colyseus and Xsolla.</p>
-    <p>It allows you to test the webhook endpoint locally.</p>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+</head>
+<body class="bg-gray-100 min-h-screen p-8">
+
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-800 mb-4">Colyseus + Xsolla Payments Integration</h1>
+        <p class="text-gray-600 mb-2">This is a simple integration of Colyseus and Xsolla.</p>
+        <!-- <p class="text-gray-600 mb-8">It allows you to test the webhook endpoint locally.</p> -->
+
+        <ul class="list-disc list-inside text-gray-600">
+            <li>This demo does not connect to the database</li>
+            <li>The payment is made for a hardcoded user ID (<code class="text-orange-600">"1"</code>)</li>
+        </ul>
+
+        <!-- Purchase Battle Pass Section -->
+        <div class="mt-8 bg-white rounded-lg shadow-lg border border-gray-200 p-6">
+            <h2 class="text-2xl font-bold text-gray-800 text-center mb-2">
+                <i class="fa-solid fa-trophy text-yellow-500"></i>
+                Purchase "Battle Pass"
+            </h2>
+            <p class="text-gray-600 mb-4 text-center">"Battle Pass" is a virtual item created from Xsolla's virtual items catalog.</p>
+
+            <fieldset class="mb-4 space-y-3 border border-gray-300 rounded-md p-4">
+                <legend class="text-sm font-medium text-gray-700 px-2">User</legend>
+                
+                <div class="flex items-center gap-3">
+                    <label for="userId" class="w-20 text-sm font-medium text-gray-700">User ID:</label>
+                    <input type="text" id="userId" class="flex-1 border border-gray-300 rounded-md p-2" value="1">
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <label for="name" class="w-20 text-sm font-medium text-gray-700">Name:</label>
+                    <input type="text" id="name" class="flex-1 border border-gray-300 rounded-md p-2" value="Endel Dreyer">
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <label for="email" class="w-20 text-sm font-medium text-gray-700">Email:</label>
+                    <input type="text" id="email" class="flex-1 border border-gray-300 rounded-md p-2" value="endel@colyseus.io">
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <label for="country" class="w-20 text-sm font-medium text-gray-700">Country:</label>
+                    <select id="country" class="flex-1 border border-gray-300 rounded-md p-2">
+                        <option value="AD">Andorra</option>
+                        <option value="AE">United Arab Emirates</option>
+                        <option value="AF">Afghanistan</option>
+                        <option value="AG">Antigua and Barbuda</option>
+                        <option value="AI">Anguilla</option>
+                        <option value="AL">Albania</option>
+                        <option value="AM">Armenia</option>
+                        <option value="AO">Angola</option>
+                        <option value="AR">Argentina</option>
+                        <option value="AS">American Samoa</option>
+                        <option value="AT">Austria</option>
+                        <option value="AU">Australia</option>
+                        <option value="AW">Aruba</option>
+                        <option value="AX">Åland Islands</option>
+                        <option value="AZ">Azerbaijan</option>
+                        <option value="BA">Bosnia and Herzegovina</option>
+                        <option value="BB">Barbados</option>
+                        <option value="BD">Bangladesh</option>
+                        <option value="BE">Belgium</option>
+                        <option value="BF">Burkina Faso</option>
+                        <option value="BG">Bulgaria</option>
+                        <option value="BH">Bahrain</option>
+                        <option value="BI">Burundi</option>
+                        <option value="BJ">Benin</option>
+                        <option value="BL">Saint Barthélemy</option>
+                        <option value="BM">Bermuda</option>
+                        <option value="BN">Brunei</option>
+                        <option value="BO">Bolivia</option>
+                        <option value="BQ">Bonaire, Sint Eustatius and Saba</option>
+                        <option value="BR">Brazil</option>
+                        <option value="BS">Bahamas</option>
+                        <option value="BT">Bhutan</option>
+                        <option value="BV">Bouvet Island</option>
+                        <option value="BW">Botswana</option>
+                        <option value="BY">Belarus</option>
+                        <option value="BZ">Belize</option>
+                        <option value="CA">Canada</option>
+                        <option value="CC">Cocos (Keeling) Islands</option>
+                        <option value="CD">Democratic Republic of the Congo</option>
+                        <option value="CF">Central African Republic</option>
+                        <option value="CG">Republic of the Congo</option>
+                        <option value="CH">Switzerland</option>
+                        <option value="CI">Ivory Coast</option>
+                        <option value="CK">Cook Islands</option>
+                        <option value="CL">Chile</option>
+                        <option value="CM">Cameroon</option>
+                        <option value="CN">China</option>
+                        <option value="CO">Colombia</option>
+                        <option value="CR">Costa Rica</option>
+                        <option value="CU">Cuba</option>
+                        <option value="CV">Cabo Verde</option>
+                        <option value="CW">Curaçao</option>
+                        <option value="CY">Cyprus</option>
+                        <option value="CZ">Czech Republic</option>
+                        <option value="DE">Germany</option>
+                        <option value="DJ">Djibouti</option>
+                        <option value="DK">Denmark</option>
+                        <option value="DM">Dominica</option>
+                        <option value="DO">Dominican Republic</option>
+                        <option value="DZ">Algeria</option>
+                        <option value="EC">Ecuador</option>
+                        <option value="EE">Estonia</option>
+                        <option value="EG">Egypt</option>
+                        <option value="EH">Western Sahara</option>
+                        <option value="ER">Eritrea</option>
+                        <option value="ES">Spain</option>
+                        <option value="ET">Ethiopia</option>
+                        <option value="FI">Finland</option>
+                        <option value="FJ">Fiji</option>
+                        <option value="FK">Falkland Islands</option>
+                        <option value="FM">Micronesia</option>
+                        <option value="FO">Faroe Islands</option>
+                        <option value="FR">France</option>
+                        <option value="GA">Gabon</option>
+                        <option value="GB">United Kingdom</option>
+                        <option value="GD">Grenada</option>
+                        <option value="GE">Georgia</option>
+                        <option value="GF">French Guiana</option>
+                        <option value="GG">Guernsey</option>
+                        <option value="GH">Ghana</option>
+                        <option value="GI">Gibraltar</option>
+                        <option value="GL">Greenland</option>
+                        <option value="GM">Gambia</option>
+                        <option value="GN">Guinea</option>
+                        <option value="GP">Guadeloupe</option>
+                        <option value="GQ">Equatorial Guinea</option>
+                        <option value="GR">Greece</option>
+                        <option value="GT">Guatemala</option>
+                        <option value="GU">Guam</option>
+                        <option value="GW">Guinea-Bissau</option>
+                        <option value="GY">Guyana</option>
+                        <option value="HK">Hong Kong</option>
+                        <option value="HM">Heard Island and McDonald Islands</option>
+                        <option value="HN">Honduras</option>
+                        <option value="HR">Croatia</option>
+                        <option value="HT">Haiti</option>
+                        <option value="HU">Hungary</option>
+                        <option value="ID">Indonesia</option>
+                        <option value="IE">Ireland</option>
+                        <option value="IL">Israel</option>
+                        <option value="IM">Isle of Man</option>
+                        <option value="IN">India</option>
+                        <option value="IO">British Indian Ocean Territory</option>
+                        <option value="IQ">Iraq</option>
+                        <option value="IR">Iran</option>
+                        <option value="IS">Iceland</option>
+                        <option value="IT">Italy</option>
+                        <option value="JE">Jersey</option>
+                        <option value="JM">Jamaica</option>
+                        <option value="JO">Jordan</option>
+                        <option value="JP">Japan</option>
+                        <option value="KE">Kenya</option>
+                        <option value="KG">Kyrgyzstan</option>
+                        <option value="KH">Cambodia</option>
+                        <option value="KI">Kiribati</option>
+                        <option value="KM">Comoros</option>
+                        <option value="KN">Saint Kitts and Nevis</option>
+                        <option value="KP">North Korea</option>
+                        <option value="KR">South Korea</option>
+                        <option value="KW">Kuwait</option>
+                        <option value="KY">Cayman Islands</option>
+                        <option value="KZ">Kazakhstan</option>
+                        <option value="LA">Laos</option>
+                        <option value="LB">Lebanon</option>
+                        <option value="LC">Saint Lucia</option>
+                        <option value="LI">Liechtenstein</option>
+                        <option value="LK">Sri Lanka</option>
+                        <option value="LR">Liberia</option>
+                        <option value="LS">Lesotho</option>
+                        <option value="LT">Lithuania</option>
+                        <option value="LU">Luxembourg</option>
+                        <option value="LV">Latvia</option>
+                        <option value="LY">Libya</option>
+                        <option value="MA">Morocco</option>
+                        <option value="MC">Monaco</option>
+                        <option value="MD">Moldova</option>
+                        <option value="ME">Montenegro</option>
+                        <option value="MF">Saint Martin</option>
+                        <option value="MG">Madagascar</option>
+                        <option value="MH">Marshall Islands</option>
+                        <option value="MK">North Macedonia</option>
+                        <option value="ML">Mali</option>
+                        <option value="MM">Myanmar</option>
+                        <option value="MN">Mongolia</option>
+                        <option value="MO">Macao</option>
+                        <option value="MP">Northern Mariana Islands</option>
+                        <option value="MQ">Martinique</option>
+                        <option value="MR">Mauritania</option>
+                        <option value="MS">Montserrat</option>
+                        <option value="MT">Malta</option>
+                        <option value="MU">Mauritius</option>
+                        <option value="MV">Maldives</option>
+                        <option value="MW">Malawi</option>
+                        <option value="MX">Mexico</option>
+                        <option value="MY">Malaysia</option>
+                        <option value="MZ">Mozambique</option>
+                        <option value="NA">Namibia</option>
+                        <option value="NC">New Caledonia</option>
+                        <option value="NE">Niger</option>
+                        <option value="NF">Norfolk Island</option>
+                        <option value="NG">Nigeria</option>
+                        <option value="NI">Nicaragua</option>
+                        <option value="NL">Netherlands</option>
+                        <option value="NO">Norway</option>
+                        <option value="NP">Nepal</option>
+                        <option value="NU">Niue</option>
+                        <option value="NZ">New Zealand</option>
+                        <option value="OM">Oman</option>
+                        <option value="PA">Panama</option>
+                        <option value="PE">Peru</option>
+                        <option value="PF">French Polynesia</option>
+                        <option value="PG">Papua New Guinea</option>
+                        <option value="PH">Philippines</option>
+                        <option value="PK">Pakistan</option>
+                        <option value="PL">Poland</option>
+                        <option value="PN">Pitcairn Islands</option>
+                        <option value="PR">Puerto Rico</option>
+                        <option value="PS">Palestine</option>
+                        <option value="PT">Portugal</option>
+                        <option value="PY">Paraguay</option>
+                        <option value="QA">Qatar</option>
+                        <option value="RE">Réunion</option>
+                        <option value="RO">Romania</option>
+                        <option value="RS">Serbia</option>
+                        <option value="RU">Russia</option>
+                        <option value="RW">Rwanda</option>
+                        <option value="SA">Saudi Arabia</option>
+                        <option value="SB">Solomon Islands</option>
+                        <option value="SC">Seychelles</option>
+                        <option value="SD">Sudan</option>
+                        <option value="SE">Sweden</option>
+                        <option value="SG">Singapore</option>
+                        <option value="SH">Saint Helena</option>
+                        <option value="SI">Slovenia</option>
+                        <option value="SJ">Svalbard and Jan Mayen</option>
+                        <option value="SK">Slovakia</option>
+                        <option value="SL">Sierra Leone</option>
+                        <option value="SM">San Marino</option>
+                        <option value="SN">Senegal</option>
+                        <option value="SO">Somalia</option>
+                        <option value="SR">Suriname</option>
+                        <option value="ST">São Tomé and Príncipe</option>
+                        <option value="SV">El Salvador</option>
+                        <option value="SY">Syria</option>
+                        <option value="SZ">Eswatini</option>
+                        <option value="TC">Turks and Caicos Islands</option>
+                        <option value="TD">Chad</option>
+                        <option value="TF">French Southern and Antarctic Lands</option>
+                        <option value="TG">Togo</option>
+                        <option value="TH">Thailand</option>
+                        <option value="TJ">Tajikistan</option>
+                        <option value="TK">Tokelau</option>
+                        <option value="TM">Turkmenistan</option>
+                        <option value="TN">Tunisia</option>
+                        <option value="TO">Tonga</option>
+                        <option value="TR">Turkey</option>
+                        <option value="TT">Trinidad and Tobago</option>
+                        <option value="TV">Tuvalu</option>
+                        <option value="TW">Taiwan</option>
+                        <option value="TZ">Tanzania</option>
+                        <option value="UA">Ukraine</option>
+                        <option value="UG">Uganda</option>
+                        <option value="UM">United States Minor Outlying Islands</option>
+                        <option value="US">United States</option>
+                        <option value="UY">Uruguay</option>
+                        <option value="UZ">Uzbekistan</option>
+                        <option value="VA">Vatican City</option>
+                        <option value="VC">Saint Vincent and the Grenadines</option>
+                        <option value="VE">Venezuela</option>
+                        <option value="VG">Virgin Islands (British)</option>
+                        <option value="VI">Virgin Islands (U.S.)</option>
+                        <option value="VN">Vietnam</option>
+                        <option value="VU">Vanuatu</option>
+                        <option value="WS">Samoa</option>
+                        <option value="YE">Yemen</option>
+                        <option value="YT">Mayotte</option>
+                        <option value="ZA">South Africa</option>
+                        <option value="ZM">Zambia</option>
+                        <option value="ZW">Zimbabwe</option>
+                    </select>
+                </div>
+            </fieldset>
+            
+            <div class="flex flex-col md:flex-row gap-4">
+                <!-- New Window Button -->
+                <button id="newWindowButton" onclick="openNewWindow()" 
+                        class="flex-1 bg-blue-600 disabled:opacity-50 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 ease-in-out transform hover:scale-105">
+                    <i class="fa-solid fa-up-right-from-square"></i>
+                    Pay in New Window
+                </button>
+
+                <!-- Iframe Button -->
+                <button id="iframeButton" onclick="openIframe()" 
+                        class="flex-1 bg-purple-600 disabled:opacity-50 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 ease-in-out transform hover:scale-105">
+                    <i class="fa-solid fa-square-arrow-up-right"></i>
+                    Pay in iframe
+                </button>
+
+                <!-- Embed Widget Button -->
+                <!-- Include Xsolla Widget -->
+                <script>
+                    var s = document.createElement('script');
+                    s.type = "text/javascript";
+                    s.async = true;
+                    s.src = "https://cdn.xsolla.net/payments-bucket-prod/embed/1.5.0/widget.min.js";
+                    var head = document.getElementsByTagName('head')[0];
+                    head.appendChild(s);
+                </script>
+                <button id="embedWidgetButton" onclick="openPayStationWidget()" 
+                        class="flex-1 bg-green-600 disabled:opacity-50 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 ease-in-out transform hover:scale-105">
+                    <i class="fa-solid fa-box-open"></i>
+                    Pay in Embed Widget
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Initialization script -->
     <script>
         const client = new Colyseus.Client('http://localhost:2567');
 
-        function getPaymentTokenAndOpenWidget() {
+        function openPayStationWidget() {
             // Prevent multiple clicks
             embedWidgetButton.disabled = true;
 
@@ -56,17 +374,55 @@
             client.http.post("/xsolla/shop/token").then((response) => {
                 window.addEventListener('message', postMessageListener);
 
+                // Create modal container
+                var modal = document.createElement("div");
+                modal.className = "fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50";
+                modal.id = "paymentModal";
+
+                // Create modal content
+                var modalContent = document.createElement("div");
+                modalContent.className = "bg-white rounded-lg p-1 relative shadow-2xl";
+
+                // Create close button
+                var closeButton = document.createElement("button");
+                closeButton.className = "bg-gray-600 hover:bg-red-500 rounded-full absolute -top-2 -right-2 border-none text-xl cursor-pointer text-white hover:text-white hover:scale-110 transition-all duration-200 z-10 inline-block w-8 h-8 shadow-lg hover:shadow-xl";
+                closeButton.innerHTML = "×";
+                closeButton.onclick = closePaymentModal;
+
+                // Create iframe
                 var iframe = document.createElement("iframe");
                 iframe.src = `https://${response.data.sandbox ? "sandbox-" : ""}secure.xsolla.com/paystation4/?token=${response.data.token}`;
                 iframe.width = "800";
                 iframe.height = "930";
                 iframe.allow = "clipboard-read; clipboard-write; payment";
-                document.body.appendChild(iframe);
+                iframe.className = "border-none rounded-lg";
+
+                // Assemble modal
+                modalContent.appendChild(closeButton);
+                modalContent.appendChild(iframe);
+                modal.appendChild(modalContent);
+                
+                // Add click-outside-to-close functionality
+                modal.onclick = function(event) {
+                    if (event.target === modal) {
+                        closePaymentModal();
+                    }
+                };
+                
+                document.body.appendChild(modal);
 
             }).finally(() => {
                 // Enable button again after request is finished
                 iframeButton.disabled = false;
             });
+        }
+
+        function closePaymentModal() {
+            var modal = document.getElementById("paymentModal");
+            if (modal) {
+                modal.remove();
+                window.removeEventListener('message', postMessageListener);
+            }
         }
 
         var postMessageListener = (event) => {
@@ -80,173 +436,155 @@
                 case 'open-paystation':
                     console.log('Paystation UI opened', eventData.data);
                     break;
-                
+
                 case 'add_saved_account':
                     console.log('Payment account saved successfully', eventData.data);
                     break;
-                
+
                 case 'add_saved_account_error':
                     console.log('Error saving payment account:', eventData.data);
                     break;
-                
+
                 case 'cancel_save_account':
                     console.log('User cancelled saving payment account', eventData.data);
                     break;
-                
+
                 case 'cart_display':
                     console.log('Payment UI displayed as columns:', eventData.data);
                     break;
-                
+
                 case 'change-status':
                     console.log('Payment status changed:', eventData.data);
                     break;
-                
+
                 case 'choose-method':
                     console.log('Payment method chosen:', eventData.data);
                     break;
-                
+
                 case 'click-custom-package-continue':
                     console.log('Continue button clicked for custom package', eventData.data);
                     break;
-                
+
                 case 'click-comment':
                     console.log('Comment button clicked', eventData.data);
                     break;
-                
+
                 case 'click-buy-package':
                     console.log('Buy Package button clicked', eventData.data);
                     break;
-                
+
                 case 'click-buy-gift-package':
                     console.log('Buy Gift Package button clicked', eventData.data);
                     break;
-                
+
                 case 'click-buy-gift-custom-package':
                     console.log('Buy Gift Custom Package button clicked', eventData.data);
                     break;
-                
+
                 case 'click-btn-pay':
                     console.log('Pay Now button clicked', eventData.data);
                     break;
-                
+
                 case 'click-btn-continue':
                     console.log('Continue button clicked for subscription', eventData.data);
                     break;
-                
+
                 case 'click-btn-apply':
                     console.log('Apply button clicked for coupon', eventData.data);
                     break;
-                
+
                 case 'click-btn-activate':
                     console.log('Activate button clicked for game key', eventData.data);
                     break;
-                
+
                 case 'click-btn-accept':
                     console.log('Accept button clicked for digital content', eventData.data);
                     break;
-                
+
                 case 'create-invoice':
                     console.log('Transaction created:', eventData.data);
                     break;
-                
+
                 case 'dimensions':
                     console.log('Payment UI dimensions:', eventData.data);
                     break;
-                
+
                 case 'error':
                     console.log('Payment error:', eventData.data);
                     break;
-                
+
                 case 'external-link-open':
                     console.log('External link opened:', eventData.data.url);
                     break;
-                
+
                 case 'external-payment-open':
                     console.log('External payment system opened', eventData.data);
                     break;
-                
+
                 case 'focus-change':
                     console.log('Focus changed:', eventData.data);
                     break;
-                
+
                 case 'open-payment-credit-card':
                     console.log('Credit card payment UI opened', eventData.data);
                     break;
-                
+
                 case 'open-payment-saved-methods':
                     console.log('Saved payment methods page opened', eventData.data);
                     break;
-                
+
                 case 'open-payment-payment-methods':
                     console.log('Payment methods list opened', eventData.data);
                     break;
-                
+
                 case 'open-status':
                     console.log('Payment status page opened', eventData.data);
                     break;
-                
+
                 case 'open-status-processing':
                     console.log('Processing payment status page opened', eventData.data);
                     break;
-                
+
                 case 'open-status-error':
                     console.log('Error payment status page opened', eventData.data);
                     break;
-                
+
                 case 'open-status-success':
                     console.log('Success payment status page opened', eventData.data);
                     break;
-                
+
                 case 'order-status':
                     console.log('Order status changed to done:', eventData.data);
                     break;
-                
+
                 case 'resize':
                     console.log('Payment UI resized:', eventData.data);
                     break;
-                
+
                 case 'show-error-page':
                     console.log('Error page shown:', eventData.data);
                     break;
-                
+
                 case 'status':
                     console.log('Payment status page accessed:', eventData.data);
                     break;
-                
+
                 case 'status-redeem':
                     console.log('Coupon redemption in payment form', eventData.data);
                     break;
-                
+
                 case 'close':
                     console.log('Payment UI closed', eventData.data);
-
                     window.removeEventListener('message', postMessageListener);
+                    closePaymentModal();
                     break;
-                
+
                 default:
                     console.log('Unknown command:', eventData.command, eventData.data);
                     break;
             }
         }
-
     </script>
-
-    <!-- New Windows -->
-    <button id="newWindowButton" onclick="openNewWindow()">Open Payment UI in New Window</button>
-    
-    <!-- Include Xsolla Widget -->
-    <script>
-        var s = document.createElement('script');
-        s.type = "text/javascript";
-        s.async = true;
-        s.src = "https://cdn.xsolla.net/payments-bucket-prod/embed/1.5.0/widget.min.js";
-        var head = document.getElementsByTagName('head')[0];
-        head.appendChild(s);
-    </script>
-    <button id="embedWidgetButton" onclick="getPaymentTokenAndOpenWidget()">Open Pay Station Embed Widget</button>
-
-    <!-- Iframe -->
-    <button id="iframeButton" onclick="openIframe()">Open Payment UI in Iframe</button>
 
 </body>
 </html>

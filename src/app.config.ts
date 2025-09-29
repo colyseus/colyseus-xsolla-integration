@@ -1,13 +1,24 @@
 import config from "@colyseus/tools";
 import express from "express";
+
+/**
+ * Config
+ */
+import { authSettings } from "./config/auth.config";
+
+/**
+ * Routes
+ */
 import { monitor } from "@colyseus/monitor";
 import { playground } from "@colyseus/playground";
+import { auth } from "@colyseus/auth";
 import { xsolla } from "./routes/xsolla";
 
 /**
  * Import your Room files
  */
 import { MyRoom } from "./rooms/MyRoom";
+
 
 export default config({
 
@@ -28,6 +39,8 @@ export default config({
         // IMPORTANT: Do not include JSON middleware before Xsolla webhook endpoint
         // Parse incoming JSON bodies
         app.use(express.json());
+
+        app.use("/", express.static("public"));
 
         /**
          * Bind your custom express routes here:
@@ -52,7 +65,10 @@ export default config({
          */
         app.use("/monitor", monitor());
 
-        app.use("/", express.static("public"));
+        /**
+         * Bind auth routes
+         */
+        app.use(auth.prefix, auth.routes(authSettings));
     },
 
 

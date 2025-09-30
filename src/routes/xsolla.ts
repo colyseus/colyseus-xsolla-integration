@@ -1,7 +1,7 @@
 import express from 'express';
 import * as crypto from 'crypto';
-import { type Response } from 'express';
-import { type Request, auth } from "@colyseus/auth";
+import { type Response as ExpressResponse } from 'express';
+import { type Request as ExpressRequest, auth } from "@colyseus/auth";
 
 const projectId = process.env.XSOLLA_PROJECT_ID;
 const merchantId = process.env.XSOLLA_MERCHANT_ID;
@@ -10,84 +10,140 @@ const webhookSecretKey = process.env.XSOLLA_WEBHOOK_SECRET_KEY;
 
 export const xsolla = express.Router();
 
-xsolla.post('/shop/token', express.json({ limit: '100kb' }), /* auth.middleware(), */ async (req: Request, res: Response) => {
-    console.log("req:", req)
-
+xsolla.post('/shop/token', express.json({ limit: '100kb' }), /* auth.middleware(), */ async (req: ExpressRequest, res: ExpressResponse) => {
+    //
+    // Recommended: Use auth.middleware() to authenticate the request instead of manually parsing the request body
+    // console.log("req.auth", req.auth);
+    //
     const userId = req.body.userId;
     const name = req.body.name;
     const email = req.body.email;
     const country = req.body.country;
-
-    console.log("req.body", req.body);
+    const purchaseType = req.body.purchaseType;
 
     // TODO: do not forget to set "sandbox" to "false" when going live
     const sandbox = (process.env.NODE_ENV !== "production");
 
-    //
-    // Use req.auth if you are using the @colyseus/auth middleware 
-    // console.log("req.auth", req.auth);
-    //
-
     try {
-        const xsollaTokenResponse = await fetch(`https://store.xsolla.com/api/v3/project/${projectId}/admin/payment/token`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Basic ' + Buffer.from(`${projectId}:${apiKey}`).toString('base64')
-                // 'X-User-Ip': '127.0.0.1'
-            },
-            body: JSON.stringify({
-                user: {
-                    id: { value: userId },
-                    name: { value: name },
-                    email: { value: email },
+        let tokenResponse: Response;
 
-                    // user.country.value parameter is used to select a currency for the order. 
-                    // If user's country is unknown, providing the user's IP in 'X-User-Ip' header is an alternative option.
-                    country: { value: country, allow_modify: true }
+        if (purchaseType === "virtualItem") {
+            /**
+             * Purchasing a virtual item
+             * See operation documentation here: https://developers.xsolla.com/api/shop-builder/operation/admin-create-payment-token/
+             */
+            tokenResponse = await fetch(`https://store.xsolla.com/api/v3/project/${projectId}/admin/payment/token`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Basic ' + Buffer.from(`${merchantId}:${apiKey}`).toString('base64')
+                    // 'X-User-Ip': '127.0.0.1'
                 },
-                purchase: {
-                    items: [
-                        {
-                            // Use the SKU from "Items Catalog -> Virtual Items"
-                            sku: "battlepass-season1",
-                            quantity: 1
+                body: JSON.stringify({
+                    user: {
+                        id: { value: userId },
+                        name: { value: name },
+                        email: { value: email },
+
+                        // user.country.value parameter is used to select a currency for the order. 
+                        // If user's country is unknown, providing the user's IP in 'X-User-Ip' header is an alternative option.
+                        country: { value: country, allow_modify: true }
+                    },
+                    purchase: {
+                        items: [
+                            // Set up a virtual item: https://developers.xsolla.com/doc/shop-builder/features/virtual-items/#shop_builder_virtual_items_set_up_in_pa_create_item
+                            {
+                                sku: "my-virtual-item",
+                                quantity: 1
+                            }
+                        ]
+                    },
+                    sandbox,
+                    settings: {
+                        language: "en",
+                        currency: "USD",
+                        // payment_method: 1380, // Optional: set preferred payment method
+                        return_url: "http://localhost:2567/",
+                        ui: {
+                            /**
+                             * - "63295a9a2e47fab76f7708e1": light theme (default) 
+                             * - "63295aab2e47fab76f7708e3": the dark theme. 
+                             * - You can also create a custom theme:
+                             *   Go to "Your project > Payments (Pay Station) > UI theme", and copy the ID of your custom theme.
+                             */
+                            theme: "63295aab2e47fab76f7708e3"
+                        }
+                    },
+                    // custom_parameters: {
+                    // }
+                })
+            });
+
+        } else {
+
+            /**
+             * Creating a subscription
+             * See operation documentation here: https://developers.xsolla.com/api/subscriptions/operation/create-token/
+             */
+            tokenResponse = await fetch(`https://api.xsolla.com/merchant/v2/merchants/${merchantId}/token`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Basic ' + Buffer.from(`${merchantId}:${apiKey}`).toString('base64')
+                    // 'X-User-Ip': '127.0.0.1'
+                },
+                body: JSON.stringify({
+                    user: {
+                        id: { value: userId, hidden: true },
+                        name: { value: name, hidden: false },
+                        email: { value: email },
+                        // user.country.value parameter is used to select a currency for the order. 
+                        // If user's country is unknown, providing the user's IP in 'X-User-Ip' header is an alternative option.
+                        country: { value: country, allow_modify: true }
+                    },
+                    purchase: {
+                        // Set up a subscription plan: https://developers.xsolla.com/doc/subscriptions/integration-guide/set-up-plan/
+                        subscription: {
+                            plan_id: "72qb7Cu9"
                         },
-                    ]
-                },
-                sandbox,
-                settings: {
-                    language: "en",
-                    currency: "USD",
-                    // payment_method: 1380,
-                    return_url: "http://localhost:2567/",
-                    ui: {
-                        /**
-                         * - "63295a9a2e47fab76f7708e1": light theme (default) 
-                         * - "63295aab2e47fab76f7708e3": the dark theme. 
-                         * - You can also create a custom theme:
-                         *   Go to "Your project > Payments (Pay Station) > UI theme", and copy the ID of your custom theme.
-                         */
-                        theme: "63295aab2e47fab76f7708e3"
-                    }
-                },
-                // custom_parameters: {
-                //     custom_param: "custom_value"
-                // }
-            })
-        });
+                    },
+                    settings: {
+                        project_id: Number(projectId),
+                        // external_id: "unique_transaction_id", // OPTIONAL: add your unique transaction ID here
+                        language: "en",
+                        mode: (sandbox) ? "sandbox" : "production",
+                        currency: "USD",
+                    },
+                    // custom_parameters: {
+                    // }
+                })
+            });
 
-        // If the response is not 200, return the error
-        const contentType = xsollaTokenResponse.headers.get("content-type") || "";
-        let response = (contentType.includes("application/json"))
-            ? await xsollaTokenResponse.json()
-            : await xsollaTokenResponse.text();
-
-        if (response?.errorMessageExtended) {
-            console.log(response.errorMessageExtended);
         }
 
-        res.status(xsollaTokenResponse.status).json({ sandbox, ...response });
+
+        console.log(tokenResponse);
+
+        // If the response is not 200, return the error
+        const contentType = tokenResponse.headers.get("content-type") || "";
+        let response = (contentType.includes("application/json"))
+            ? await tokenResponse.json()
+            : await tokenResponse.text();
+
+        // If the response is not 200, log the error
+        if (tokenResponse.ok) { 
+            // success
+            res.status(tokenResponse.status).json({ sandbox, ...response });
+
+        } else {
+            // error
+            console.error(response.errorMessageExtended || response.extended_message || response.message);
+            console.log("Raw response:", response);
+            res.status(tokenResponse.status).json({ error: response.errorMessageExtended || response.message });
+        }
+
 
     } catch (error) {
         console.error('Error creating Xsolla payment token:', error);
@@ -95,7 +151,7 @@ xsolla.post('/shop/token', express.json({ limit: '100kb' }), /* auth.middleware(
     }
 });
 
-xsolla.get("/invoice/:invoiceId", async (req: Request, res: Response) => {
+xsolla.get("/invoice/:invoiceId", async (req: ExpressRequest, res: ExpressResponse) => {
     const invoiceId = req.params.invoiceId;
 
     const response = await fetch(`https://api.xsolla.com/merchant/v2/merchants/${merchantId}/reports/transactions/${invoiceId}/details`, {
@@ -105,11 +161,10 @@ xsolla.get("/invoice/:invoiceId", async (req: Request, res: Response) => {
         }
     });
 
-    const data = await response.json();
-    res.status(response.status).json(data);
+    res.status(response.status).json(await response.json());
 });
 
-xsolla.post('/webhook', (req: Request, res: Response) => {
+xsolla.post('/webhook', (req: ExpressRequest, res: ExpressResponse) => {
     // Read raw body for signature verification
     let rawBody = '';
     req.on('data', chunk => rawBody += chunk);
@@ -134,7 +189,7 @@ xsolla.post('/webhook', (req: Request, res: Response) => {
 /**
  * Verify the webhook signature
  */
-function verifySignature(req: Request, rawBody: string): boolean {
+function verifySignature(req: ExpressRequest, rawBody: string): boolean {
     const signature = req.headers.authorization;
     if (!signature) { return false; }
 
@@ -150,7 +205,7 @@ function verifySignature(req: Request, rawBody: string): boolean {
 /**
  * Process the webhook based on notification type
  */
-function processWebhook(data: any, res: Response): void {
+function processWebhook(data: any, res: ExpressResponse): void {
     console.log('Received Xsolla webhook:', data.notification_type);
 
     switch (data.notification_type) {

@@ -18,26 +18,51 @@
 <body class="bg-gray-100 min-h-screen p-8">
 
     <div class="max-w-4xl mx-auto">
-        <h1 class="text-3xl font-bold text-gray-800 mb-4">Colyseus + Xsolla Payments Integration</h1>
+
+        <!-- Logo -->
+        <div class="flex justify-center items-center mb-8">
+            <img src="/images/xsolla.svg" alt="Xsolla Logo" class="w-24">
+            <span class="text-2xl text-gray-400 mx-4">+</span>
+            <img src="/images/colyseus.png" alt="Colyseus Logo" class="w-24">
+        </div>
+
+        <!-- Title -->
+        <div class="relative">
+            <!-- Navigation buttons -->
+            <div class="mb-4 flex justify-center text-xs md:absolute md:top-0 md:right-0 md:mb-0 md:justify-end md:w-auto">
+                <a target="_blank" href="https://github.com/colyseus/colyseus-xsolla-integration" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 ease-in-out">
+                    <i class="fa-brands fa-github"></i>
+                    Source code
+                </a>
+
+                <a target="_blank" href="https://docs.colyseus.io/monetization/xsolla" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg transition duration-200 ease-in-out ml-2">
+                    <i class="fa-solid fa-book"></i>
+                    Documentation
+                </a>
+            </div>
+
+            <h1 class="text-3xl font-bold text-gray-800 mb-4">Colyseus + Xsolla Payments Integration</h1>
+        </div>
+
         <p class="text-gray-600 mb-2">This is a simple integration of Colyseus and Xsolla.</p>
         <!-- <p class="text-gray-600 mb-8">It allows you to test the webhook endpoint locally.</p> -->
 
         <ul class="list-disc list-inside text-gray-600 mb-4">
             <li>Client requests a payment token from the Colyseus server</li>
             <li>The Colyseus server requests a payment token from Xsolla using manually provided user's information</li>
-                <h2 class="italic ml-8">(It is recommended to use the <a href="https://docs.colyseus.io/auth/http" class="text-blue-500 hover:text-blue-600" target="_blank">@colyseus/auth middleware</a> to authenticate the user instead)</h2>
+                <h2 class="italic ml-8 text-sm">(It is recommended to use the <a href="https://docs.colyseus.io/auth/http" class="text-blue-500 hover:text-blue-600" target="_blank">@colyseus/auth middleware</a> to authenticate the request instead)</h2>
             <li>Uses the token to open the Xsolla Pay Station UI</li>
         </ul>
 
         <!-- Info Callout -->
-        <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4 ">
+        <div class="bg-blue-50 border-l-4 border-blue-400 p-3 mb-4 rounded-lg">
             <div class="flex">
                 <div class="flex-shrink-0">
                     <i class="fa-solid fa-info-circle text-blue-400"></i>
                 </div>
                 <div class="ml-3">
                     <p class="text-sm text-blue-700">
-                        This demo does not connect to the database.
+                        This demo does not connect to the database. See <a href="https://docs.colyseus.io/database" class="text-blue-500 hover:text-blue-600" target="_blank">database integration recommendations</a>.
                     </p>
                 </div>
             </div>
@@ -46,10 +71,28 @@
         <!-- Purchase Battle Pass Section -->
         <div class="bg-white rounded-lg shadow-lg border border-gray-200 p-6">
             <h2 class="text-2xl font-bold text-gray-800 text-center mb-2">
-                <i class="fa-solid fa-trophy text-yellow-500"></i>
-                Purchase "Battle Pass"
+                <i class="fa-solid fa-cart-shopping text-yellow-500"></i>
+                Purchase 
             </h2>
-            <p class="text-gray-600 mb-4 text-center">"Battle Pass" is a virtual item created from Xsolla's virtual items catalog.</p>
+            <p class="text-gray-600 mb-4 text-center">Choose the type of purchase you want to test.</p>
+
+            <div class="space-y-3 mb-6">
+                <label class="flex items-start gap-3 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                    <input type="radio" name="purchaseType" value="virtualItem" checked class="mt-1 text-blue-600 focus:ring-blue-500">
+                    <div class="flex-1">
+                        <div class="font-medium text-gray-900">Pay for a <strong>Virtual Item</strong></div>
+                        <div class="text-sm text-gray-600">A virtual item that was created from Xsolla's virtual items catalog</div>
+                    </div>
+                </label>
+
+                <label class="flex items-start gap-3 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                    <input type="radio" name="purchaseType" value="subscription" class="mt-1 text-blue-600 focus:ring-blue-500">
+                    <div class="flex-1">
+                        <div class="font-medium text-gray-900">Create a <strong>Subscription</strong></div>
+                        <div class="text-sm text-gray-600">A regular subscription that was created from Xsolla's subscription plans</div>
+                    </div>
+                </label>
+            </div>
 
             <fieldset class="mb-4 space-y-3 border border-gray-300 rounded-md p-4">
                 <legend class="text-sm font-medium text-gray-700 px-2">User</legend>
@@ -295,7 +338,7 @@
                         <option value="UA">Ukraine</option>
                         <option value="UG">Uganda</option>
                         <option value="UM">United States Minor Outlying Islands</option>
-                        <option value="US">United States</option>
+                        <option value="US" selected>United States</option>
                         <option value="UY">Uruguay</option>
                         <option value="UZ">Uzbekistan</option>
                         <option value="VA">Vatican City</option>
@@ -347,6 +390,18 @@
                 </button>
             </div>
         </div>
+
+        <!-- Logs -->
+        <div id="logs" class="mt-8 bg-white rounded-lg shadow-lg border border-gray-200 p-6">
+            <h2 class="text-2xl font-bold text-gray-800 text-center mb-2">
+                <i class="fa-solid fa-file-pen text-blue-500"></i>
+                Logs
+            </h2>
+            <p class="text-gray-600 mb-4 text-center">Logs will be displayed here.</p>
+
+            <pre id="logsContent" class="text-gray-600 mb-4 text-center"></pre>
+        </div>
+
     </div>
 
     <!-- Initialization script -->
@@ -354,12 +409,16 @@
         const client = new Colyseus.Client('http://localhost:2567');
 
         function getToken() {
+            // Get the selected purchase type
+            const selectedPurchaseType = document.querySelector('input[name="purchaseType"]:checked').value;
+
             return client.http.post("/xsolla/shop/token", {
                 body: {
                     userId: userId.value,
                     name: userName.value,
                     email: email.value,
-                    country: country.value
+                    country: country.value,
+                    purchaseType: selectedPurchaseType
                 }
             });
         }
@@ -374,6 +433,10 @@
                     sandbox: response.data.sandbox 
                 });
                 XPayStationWidget.open();
+
+            }).catch((error) => {
+                debugger;
+                console.error(error);
 
             }).finally(() => {
                 // Enable button again after request is finished

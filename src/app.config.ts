@@ -36,8 +36,8 @@ export default config({
          */
         app.use("/xsolla", xsolla);
 
-        // IMPORTANT: Do not include JSON middleware before Xsolla webhook endpoint
         // Parse incoming JSON bodies
+        // IMPORTANT: Do not include JSON middleware before the Xsolla webhook endpoint
         app.use(express.json());
 
         app.use("/", express.static("public"));
@@ -67,6 +67,7 @@ export default config({
 
         /**
          * Bind auth routes
+         * TODO: configure your own auth settings on `./config/auth.config.ts`
          */
         app.use(auth.prefix, auth.routes(authSettings));
     },

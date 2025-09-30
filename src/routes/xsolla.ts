@@ -123,9 +123,6 @@ xsolla.post('/shop/token', express.json({ limit: '100kb' }), /* auth.middleware(
 
         }
 
-
-        console.log(tokenResponse);
-
         // If the response is not 200, return the error
         const contentType = tokenResponse.headers.get("content-type") || "";
         let response = (contentType.includes("application/json"))
@@ -232,8 +229,28 @@ function processWebhook(data: any, res: ExpressResponse): void {
             break;
         }
 
+        case "create_subscription": {
+            handleCreateSubscription(data);
+            break;
+        }
+
+        case "update_subscription": {
+            handleUpdateSubscription(data);
+            break;
+        }
+
+        case "cancel_subscription": {
+            handleCancelSubscription(data);
+            break;
+        }
+
+        case "refund": {
+            handleRefund(data);
+            break;
+        }
+
         default: {
-            console.log(`Unhandled notification type: ${data.notification_type}`);
+            console.log(`Unhandled notification type: ${data.notification_type}`, data);
             break;
         }
 
@@ -286,7 +303,7 @@ function handleOrderPaid(webhookData: any): void {
  * Handle order canceled notification
  */
 function handleOrderCanceled(webhookData: any): void {
-    const userId = webhookData.user?.external_id;
+    const userId = webhookData.user?.id;
     const orderId = webhookData.order?.id;
 
     console.log("Order Canceled:");
@@ -300,4 +317,54 @@ function handleOrderCanceled(webhookData: any): void {
     // - Send cancellation notification
     // - Update order status in database
     // - Log cancellation for analytics
+}
+
+/**
+ * Handle create subscription notification
+ */
+function handleCreateSubscription(webhookData: any): void {
+    const userId = webhookData.user?.id;
+    const orderId = webhookData.subscription?.subscription_id;
+
+    console.log("Create Subscription:");
+    console.log(`User ID: ${userId}`);
+    console.log(`Order ID: ${orderId}`);
+    console.log("Full webhook data:", JSON.stringify(webhookData, null, 2));
+
+    // TODO: Implement your game's logic for handling create subscriptions
+    // Examples:
+    // - Grant access to the subscription
+}
+
+/**
+ * Handle update subscription notification
+ */
+function handleUpdateSubscription(webhookData: any): void {
+    const userId = webhookData.user?.id;
+    const orderId = webhookData.subscription?.subscription_id;
+
+    console.log("Update Subscription:");
+    console.log(`User ID: ${userId}`);
+    console.log(`Order ID: ${orderId}`);
+    console.log("Full webhook data:", JSON.stringify(webhookData, null, 2));
+}
+
+/**
+ * Handle cancel subscription notification
+ */
+function handleCancelSubscription(webhookData: any): void {
+    const userId = webhookData.user?.id;
+    const orderId = webhookData.subscription?.subscription_id;
+
+    console.log("Cancel Subscription:");
+    console.log(`User ID: ${userId}`);
+    console.log(`Order ID: ${orderId}`);
+    console.log("Full webhook data:", JSON.stringify(webhookData, null, 2));
+}
+
+/**
+ * Handle refund notification
+ */
+function handleRefund(webhookData: any): void {
+    console.log("Refund:", JSON.stringify(webhookData, null, 2));
 }

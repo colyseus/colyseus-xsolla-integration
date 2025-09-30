@@ -22,39 +22,25 @@
         <!-- Logo -->
         <div class="flex justify-center items-center mb-8">
             <img src="/images/xsolla.svg" alt="Xsolla Logo" class="w-24">
-            <span class="text-2xl text-gray-400 mx-4">+</span>
+            <span class="text-3xl text-gray-400 mx-6">+</span>
             <img src="/images/colyseus.png" alt="Colyseus Logo" class="w-24">
         </div>
 
         <!-- Title -->
-        <div class="relative">
-            <!-- Navigation buttons -->
-            <div class="mb-4 flex justify-center text-xs md:absolute md:top-0 md:right-0 md:mb-0 md:justify-end md:w-auto">
-                <a target="_blank" href="https://github.com/colyseus/colyseus-xsolla-integration" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 ease-in-out">
-                    <i class="fa-brands fa-github"></i>
-                    Source code
-                </a>
-
-                <a target="_blank" href="https://docs.colyseus.io/monetization/xsolla" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg transition duration-200 ease-in-out ml-2">
-                    <i class="fa-solid fa-book"></i>
-                    Documentation
-                </a>
-            </div>
-
-            <h1 class="text-3xl font-bold text-gray-800 mb-4">Colyseus + Xsolla Payments Integration</h1>
-        </div>
+        <h1 class="text-3xl font-bold text-gray-800 mb-4">Colyseus + Xsolla Payments Integration</h1>
 
         <p class="text-gray-600 mb-2">This is a simple integration of Colyseus and Xsolla.</p>
-        <!-- <p class="text-gray-600 mb-8">It allows you to test the webhook endpoint locally.</p> -->
 
-        <ul class="list-disc list-inside text-gray-600 mb-4">
+        <ul class="list-disc list-inside text-gray-600 mb-8 space-y-0.5">
             <li>Client requests a payment token from the Colyseus server</li>
             <li>The Colyseus server requests a payment token from Xsolla using manually provided user's information</li>
                 <h2 class="italic ml-8 text-sm">(It is recommended to use the <a href="https://docs.colyseus.io/auth/http" class="text-blue-500 hover:text-blue-600" target="_blank">@colyseus/auth middleware</a> to authenticate the request instead)</h2>
             <li>Uses the token to open the Xsolla Pay Station UI</li>
+            <li>When asked for credit card information, use <a href="https://developers.xsolla.com/doc/pay-station/testing/test-cards/#pay_station_references_test_cards_success" target="_blank" class="text-blue-500 hover:text-blue-600">one of the test cards</a> from Xsolla. </li>
+                <h2 class="italic ml-8 text-sm">Such as: <i class="fa-solid fa-credit-card"></i> <code class="text-sm text-red-500">4111 1111 1111 1111</code> · Exp. date: <code class="text-sm text-red-500">12/40</code> · CVV2: any 3 digits.</h2>
         </ul>
 
-        <!-- Info Callout -->
+        <!-- Info Callout 
         <div class="bg-blue-50 border-l-4 border-blue-400 p-3 mb-4 rounded-lg">
             <div class="flex">
                 <div class="flex-shrink-0">
@@ -65,6 +51,25 @@
                         This demo does not connect to the database. See <a href="https://docs.colyseus.io/database" class="text-blue-500 hover:text-blue-600" target="_blank">database integration recommendations</a>.
                     </p>
                 </div>
+            </div>
+        </div>
+        -->
+
+        <!-- Xsolla Registration Button -->
+        <div class="mb-8 flex flex-col items-center">
+            <a href="#" target="_blank" class="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out" style="background: linear-gradient(to right, #6939f9, #8b5cf6);">
+                <div class="absolute inset-0 rounded-xl blur opacity-30 group-hover:opacity-50 transition-opacity duration-300" style="background: linear-gradient(to right, #6939f9, #8b5cf6);"></div>
+                <div class="relative flex items-center space-x-3">
+                    <i class="fa-solid fa-user-plus text-xl"></i>
+                    <span>Register for Xsolla Account</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-sm opacity-80 group-hover:opacity-100 transition-opacity duration-300"></i>
+                </div>
+            </a>
+            
+            <!-- Support Disclaimer -->
+            <div class="mt-3 flex items-center text-sm text-gray-600 bg-blue-50 border border-blue-200 rounded-lg px-4 py-2">
+                <i class="fa-solid fa-heart text-red-500 mr-2"></i>
+                <span>Registering through this link helps support the <strong>Colyseus</strong> project</span>
             </div>
         </div>
 
@@ -104,12 +109,12 @@
 
                 <div class="flex items-center gap-3">
                     <label for="name" class="w-20 text-sm font-medium text-gray-700">Name:</label>
-                    <input type="text" id="userName" class="flex-1 border border-gray-300 rounded-md p-2" value="Endel Dreyer">
+                    <input type="text" id="userName" class="flex-1 border border-gray-300 rounded-md p-2" value="Jake Badlands">
                 </div>
 
                 <div class="flex items-center gap-3">
                     <label for="email" class="w-20 text-sm font-medium text-gray-700">Email:</label>
-                    <input type="text" id="email" class="flex-1 border border-gray-300 rounded-md p-2" value="endel@colyseus.io">
+                    <input type="text" id="email" class="flex-1 border border-gray-300 rounded-md p-2" value="user@email.com">
                 </div>
 
                 <div class="flex items-center gap-3">
@@ -391,17 +396,56 @@
             </div>
         </div>
 
-        <!-- Logs -->
-        <div id="logs" class="mt-8 bg-white rounded-lg shadow-lg border border-gray-200 p-6">
-            <h2 class="text-2xl font-bold text-gray-800 text-center mb-2">
-                <i class="fa-solid fa-file-pen text-blue-500"></i>
-                Logs
-            </h2>
-            <p class="text-gray-600 mb-4 text-center">Logs will be displayed here.</p>
+        <footer class="mt-8 text-center text-sm text-gray-600">
 
-            <pre id="logsContent" class="text-gray-600 mb-4 text-center"></pre>
+            <!-- Navigation buttons -->
+            <div class="mb-4 flex justify-center text-xs">
+                <a target="_blank" href="https://github.com/colyseus/colyseus-xsolla-integration" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 ease-in-out">
+                    <i class="fa-brands fa-github"></i>
+                    Source code
+                </a>
+
+                <a target="_blank" href="https://docs.colyseus.io/monetization/xsolla" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg transition duration-200 ease-in-out ml-2">
+                    <i class="fa-solid fa-book"></i>
+                    Documentation
+                </a>
+            </div>
+
+            <p>
+                <a href="https://xsolla.com" target="_blank" class="text-blue-500 hover:text-blue-600">Xsolla</a>
+                <span class="text-gray-400 mx-1">+</span>
+                <a href="https://colyseus.io" target="_blank" class="text-blue-500 hover:text-blue-600">Colyseus</a>
+            </p>
+        </footer>
+    </div>
+
+    <!-- Thank You Modal -->
+    <div id="thankYouModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 hidden">
+        <div class="bg-white rounded-lg p-8 max-w-md mx-4 relative shadow-2xl">
+            <!-- Close button -->
+            <button id="closeThankYouModal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold">
+                ×
+            </button>
+            
+            <!-- Modal content -->
+            <div class="text-center">
+                <div class="mb-6">
+                    <i class="fa-solid fa-check-circle text-green-500 text-6xl mb-4"></i>
+                </div>
+                
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                    Thank You for Your Purchase!
+                </h2>
+                
+                <p class="text-gray-600 mb-6">
+                    Your payment has been processed successfully. You will receive a confirmation email shortly.
+                </p>
+                
+                <button id="closeThankYouModalBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 ease-in-out">
+                    Continue
+                </button>
+            </div>
         </div>
-
     </div>
 
     <!-- Initialization script -->
@@ -428,6 +472,7 @@
             embedWidgetButton.disabled = true;
 
             getToken().then((response) => {
+                window.addEventListener('message', postMessageListener);
                 XPayStationWidget.init({
                     access_token: response.data.token,
                     sandbox: response.data.sandbox 
@@ -435,7 +480,6 @@
                 XPayStationWidget.open();
 
             }).catch((error) => {
-                debugger;
                 console.error(error);
 
             }).finally(() => {
@@ -449,7 +493,11 @@
             newWindowButton.disabled = true;
 
             getToken().then((response) => {
+                window.addEventListener('message', postMessageListener);
                 window.open(`https://${response.data.sandbox ? "sandbox-" : ""}secure.xsolla.com/paystation4/?token=${response.data.token}`, "_blank");
+
+            }).catch((error) => {
+                console.error(error);
 
             }).finally(() => {
                 // Enable button again after request is finished
@@ -501,6 +549,9 @@
                 
                 document.body.appendChild(modal);
 
+            }).catch((error) => {
+                console.error(error);
+
             }).finally(() => {
                 // Enable button again after request is finished
                 iframeButton.disabled = false;
@@ -514,6 +565,37 @@
                 window.removeEventListener('message', postMessageListener);
             }
         }
+
+        function showThankYouModal() {
+            const modal = document.getElementById("thankYouModal");
+            modal.classList.remove("hidden");
+            
+            // Add click-outside-to-close functionality
+            modal.onclick = function(event) {
+                if (event.target === modal) {
+                    closeThankYouModal();
+                }
+            };
+        }
+
+        function closeThankYouModal() {
+            const modal = document.getElementById("thankYouModal");
+            modal.classList.add("hidden");
+        }
+
+        // Add event listeners for modal close buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            const closeBtn1 = document.getElementById("closeThankYouModal");
+            const closeBtn2 = document.getElementById("closeThankYouModalBtn");
+            
+            if (closeBtn1) {
+                closeBtn1.addEventListener('click', closeThankYouModal);
+            }
+            
+            if (closeBtn2) {
+                closeBtn2.addEventListener('click', closeThankYouModal);
+            }
+        });
 
         var postMessageListener = (event) => {
             if (!event.origin.endsWith(".xsolla.com")) {
@@ -641,6 +723,7 @@
 
                 case 'open-status-success':
                     console.log('Success payment status page opened', eventData.data);
+                    showThankYouModal();
                     break;
 
                 case 'order-status':

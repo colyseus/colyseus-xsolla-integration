@@ -22,13 +22,29 @@
         <p class="text-gray-600 mb-2">This is a simple integration of Colyseus and Xsolla.</p>
         <!-- <p class="text-gray-600 mb-8">It allows you to test the webhook endpoint locally.</p> -->
 
-        <ul class="list-disc list-inside text-gray-600">
-            <li>This demo does not connect to the database</li>
-            <li>The payment is made for a hardcoded user ID (<code class="text-orange-600">"1"</code>)</li>
+        <ul class="list-disc list-inside text-gray-600 mb-4">
+            <li>Client requests a payment token from the Colyseus server</li>
+            <li>The Colyseus server requests a payment token from Xsolla using manually provided user's information</li>
+                <h2 class="italic ml-8">(It is recommended to use the <a href="https://docs.colyseus.io/auth/http" class="text-blue-500 hover:text-blue-600" target="_blank">@colyseus/auth middleware</a> to authenticate the user instead)</h2>
+            <li>Uses the token to open the Xsolla Pay Station UI</li>
         </ul>
 
+        <!-- Info Callout -->
+        <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4 ">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <i class="fa-solid fa-info-circle text-blue-400"></i>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm text-blue-700">
+                        This demo does not connect to the database.
+                    </p>
+                </div>
+            </div>
+        </div>
+
         <!-- Purchase Battle Pass Section -->
-        <div class="mt-8 bg-white rounded-lg shadow-lg border border-gray-200 p-6">
+        <div class="bg-white rounded-lg shadow-lg border border-gray-200 p-6">
             <h2 class="text-2xl font-bold text-gray-800 text-center mb-2">
                 <i class="fa-solid fa-trophy text-yellow-500"></i>
                 Purchase "Battle Pass"
@@ -45,7 +61,7 @@
 
                 <div class="flex items-center gap-3">
                     <label for="name" class="w-20 text-sm font-medium text-gray-700">Name:</label>
-                    <input type="text" id="name" class="flex-1 border border-gray-300 rounded-md p-2" value="Endel Dreyer">
+                    <input type="text" id="userName" class="flex-1 border border-gray-300 rounded-md p-2" value="Endel Dreyer">
                 </div>
 
                 <div class="flex items-center gap-3">
@@ -302,14 +318,14 @@
             <div class="flex flex-col md:flex-row gap-4">
                 <!-- New Window Button -->
                 <button id="newWindowButton" onclick="openNewWindow()" 
-                        class="flex-1 bg-blue-600 disabled:opacity-50 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 ease-in-out transform hover:scale-105">
+                        class="flex-1 bg-blue-600 disabled:opacity-50 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 ease-in-out">
                     <i class="fa-solid fa-up-right-from-square"></i>
                     Pay in New Window
                 </button>
 
                 <!-- Iframe Button -->
                 <button id="iframeButton" onclick="openIframe()" 
-                        class="flex-1 bg-purple-600 disabled:opacity-50 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 ease-in-out transform hover:scale-105">
+                        class="flex-1 bg-purple-600 disabled:opacity-50 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 ease-in-out">
                     <i class="fa-solid fa-square-arrow-up-right"></i>
                     Pay in iframe
                 </button>
@@ -325,7 +341,7 @@
                     head.appendChild(s);
                 </script>
                 <button id="embedWidgetButton" onclick="openPayStationWidget()" 
-                        class="flex-1 bg-green-600 disabled:opacity-50 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 ease-in-out transform hover:scale-105">
+                        class="flex-1 bg-green-600 disabled:opacity-50 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 ease-in-out">
                     <i class="fa-solid fa-box-open"></i>
                     Pay in Embed Widget
                 </button>
@@ -337,11 +353,22 @@
     <script>
         const client = new Colyseus.Client('http://localhost:2567');
 
+        function getToken() {
+            return client.http.post("/xsolla/shop/token", {
+                body: {
+                    userId: userId.value,
+                    name: userName.value,
+                    email: email.value,
+                    country: country.value
+                }
+            });
+        }
+
         function openPayStationWidget() {
             // Prevent multiple clicks
             embedWidgetButton.disabled = true;
 
-            client.http.post("/xsolla/shop/token").then((response) => {
+            getToken().then((response) => {
                 XPayStationWidget.init({
                     access_token: response.data.token,
                     sandbox: response.data.sandbox 
@@ -358,7 +385,7 @@
             // Prevent multiple clicks
             newWindowButton.disabled = true;
 
-            client.http.post("/xsolla/shop/token").then((response) => {
+            getToken().then((response) => {
                 window.open(`https://${response.data.sandbox ? "sandbox-" : ""}secure.xsolla.com/paystation4/?token=${response.data.token}`, "_blank");
 
             }).finally(() => {
@@ -371,7 +398,7 @@
             // Prevent multiple clicks
             iframeButton.disabled = true;
 
-            client.http.post("/xsolla/shop/token").then((response) => {
+            getToken().then((response) => {
                 window.addEventListener('message', postMessageListener);
 
                 // Create modal container
@@ -385,7 +412,7 @@
 
                 // Create close button
                 var closeButton = document.createElement("button");
-                closeButton.className = "bg-gray-600 hover:bg-red-500 rounded-full absolute -top-2 -right-2 border-none text-xl cursor-pointer text-white hover:text-white hover:scale-110 transition-all duration-200 z-10 inline-block w-8 h-8 shadow-lg hover:shadow-xl";
+                closeButton.className = "bg-gray-600 hover:bg-red-500 rounded-full absolute -top-2 -right-2 border-none text-xl cursor-pointer text-white hover:text-white transition-all duration-200 z-10 inline-block w-8 h-8 shadow-lg hover:shadow-xl";
                 closeButton.innerHTML = "×";
                 closeButton.onclick = closePaymentModal;
 

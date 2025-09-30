@@ -10,9 +10,23 @@ const webhookSecretKey = process.env.XSOLLA_WEBHOOK_SECRET_KEY;
 
 export const xsolla = express.Router();
 
-xsolla.post('/shop/token', express.json(), auth.middleware(), async (req: Request, res: Response) => {
+xsolla.post('/shop/token', express.json({ limit: '100kb' }), /* auth.middleware(), */ async (req: Request, res: Response) => {
+    console.log("req:", req)
+
+    const userId = req.body.userId;
+    const name = req.body.name;
+    const email = req.body.email;
+    const country = req.body.country;
+
+    console.log("req.body", req.body);
+
     // TODO: do not forget to set "sandbox" to "false" when going live
     const sandbox = (process.env.NODE_ENV !== "production");
+
+    //
+    // Use req.auth if you are using the @colyseus/auth middleware 
+    // console.log("req.auth", req.auth);
+    //
 
     try {
         const xsollaTokenResponse = await fetch(`https://store.xsolla.com/api/v3/project/${projectId}/admin/payment/token`, {
@@ -24,13 +38,13 @@ xsolla.post('/shop/token', express.json(), auth.middleware(), async (req: Reques
             },
             body: JSON.stringify({
                 user: {
-                    id: { value: "1" },
-                    name: { value: "Endel Dreyer" },
-                    email: { value: "endel@colyseus.io" },
+                    id: { value: userId },
+                    name: { value: name },
+                    email: { value: email },
 
                     // user.country.value parameter is used to select a currency for the order. 
                     // If user's country is unknown, providing the user's IP in 'X-User-Ip' header is an alternative option.
-                    country: { value: "US", allow_modify: true }
+                    country: { value: country, allow_modify: true }
                 },
                 purchase: {
                     items: [

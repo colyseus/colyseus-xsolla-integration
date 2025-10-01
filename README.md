@@ -1,6 +1,8 @@
 # Colyseus + Xsolla Integration
 
-A simple integration between Colyseus and Xsolla for handling in-game payments. 
+A simple integration between Colyseus and Xsolla for handling in-game payments.
+
+> View [Live demo](http://xsolla.colyseus.dev/)
 
 ## Features
 

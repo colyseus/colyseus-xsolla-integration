@@ -456,7 +456,7 @@
             // Get the selected purchase type
             const selectedPurchaseType = document.querySelector('input[name="purchaseType"]:checked').value;
 
-            return client.http.post("/xsolla/shop/token", {
+            return client.http.post("/xsolla/token", {
                 body: {
                     userId: userId.value,
                     name: userName.value,

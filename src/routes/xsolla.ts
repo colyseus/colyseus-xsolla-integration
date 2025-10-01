@@ -10,7 +10,7 @@ const webhookSecretKey = process.env.XSOLLA_WEBHOOK_SECRET_KEY;
 
 export const xsolla = express.Router();
 
-xsolla.post('/shop/token', express.json({ limit: '100kb' }), /* auth.middleware(), */ async (req: ExpressRequest, res: ExpressResponse) => {
+xsolla.post('/token', express.json({ limit: '100kb' }), /* auth.middleware(), */ async (req: ExpressRequest, res: ExpressResponse) => {
     //
     // Recommended: Use auth.middleware() to authenticate the request instead of manually parsing the request body
     // console.log("req.auth", req.auth);

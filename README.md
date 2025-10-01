@@ -1,8 +1,21 @@
 # Colyseus + Xsolla Integration
 
-See documentation → http://docs.colyseus.io/payments/xsolla
+A simple integration between Colyseus and Xsolla for handling in-game payments. 
 
-![Screenshot](screenshot.png)
+> See full documentation → http://docs.colyseus.io/payments/xsolla
+
+### Demo features
+
+- Client requests a payment token from the Colyseus server
+- The Colyseus server requests a payment token from Xsolla using manually provided user's information
+  - *(It is recommended to use the [@colyseus/auth middleware](https://docs.colyseus.io/auth/http) to authenticate the request instead)*
+- Uses the token to open the Xsolla Pay Station UI
+- When asked for credit card information, use [one of the test cards](https://developers.xsolla.com/doc/pay-station/testing/test-cards/#pay_station_references_test_cards_success) from Xsolla.
+  - *Such as: 💳 `4111 1111 1111 1111` · Exp. date: `12/40` · CVV2: any 3 digits.*
+
+<div align="center">
+    <img width="300" alt="Xsolla + Colyseus integration demo" src="screenshot.png" />
+</div>
 
 ## Testing payments locally
 

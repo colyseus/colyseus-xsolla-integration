@@ -15,6 +15,7 @@ A simple integration between Colyseus and Xsolla for handling in-game payments.
     <img width="300" alt="Xsolla + Colyseus integration demo" src="screenshot.png" />
 </div>
 
+> [!NOTE]
 > See full documentation → http://docs.colyseus.io/payments/xsolla
 
 ## Testing payments locally

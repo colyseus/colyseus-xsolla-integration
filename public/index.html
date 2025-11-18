@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 </head>
-<body class="bg-gray-100 min-h-screen p-8">
+<body class="bg-gray-100 min-h-screen p-4 sm:p-8">
 
     <div class="max-w-4xl mx-auto">
 
@@ -74,7 +74,7 @@
         -->
 
         <!-- Purchase Battle Pass Section -->
-        <div class="bg-white rounded-lg shadow-lg border border-gray-200 p-6 my-12">
+        <div class="bg-white rounded-lg shadow-lg border border-gray-200 p-4 sm:p-6 my-12">
             <h2 class="text-2xl font-bold text-gray-800 text-center mb-2">
                 <i class="fa-solid fa-cart-shopping text-yellow-500"></i>
                 Purchase 
@@ -99,27 +99,27 @@
                 </label>
             </div>
 
-            <fieldset class="mb-4 space-y-3 border border-gray-300 rounded-md p-4">
+            <fieldset class="mb-4 space-y-3 border border-gray-300 rounded-md p-3 sm:p-4 overflow-hidden">
                 <legend class="text-sm font-medium text-gray-700 px-2">User</legend>
                 
-                <div class="flex items-center gap-3">
-                    <label for="userId" class="w-20 text-sm font-medium text-gray-700">User ID:</label>
-                    <input type="text" id="userId" class="flex-1 border border-gray-300 rounded-md p-2" value="1">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                    <label for="userId" class="w-full sm:w-20 text-sm font-medium text-gray-700">User ID:</label>
+                    <input type="text" id="userId" class="flex-1 w-full min-w-0 border border-gray-300 rounded-md p-2" value="1">
                 </div>
 
-                <div class="flex items-center gap-3">
-                    <label for="name" class="w-20 text-sm font-medium text-gray-700">Name:</label>
-                    <input type="text" id="userName" class="flex-1 border border-gray-300 rounded-md p-2" value="Jake Badlands">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                    <label for="name" class="w-full sm:w-20 text-sm font-medium text-gray-700">Name:</label>
+                    <input type="text" id="userName" class="flex-1 w-full min-w-0 border border-gray-300 rounded-md p-2" value="Jake Badlands">
                 </div>
 
-                <div class="flex items-center gap-3">
-                    <label for="email" class="w-20 text-sm font-medium text-gray-700">Email:</label>
-                    <input type="text" id="email" class="flex-1 border border-gray-300 rounded-md p-2" value="user@email.com">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                    <label for="email" class="w-full sm:w-20 text-sm font-medium text-gray-700">Email:</label>
+                    <input type="text" id="email" class="flex-1 w-full min-w-0 border border-gray-300 rounded-md p-2" value="user@email.com">
                 </div>
 
-                <div class="flex items-center gap-3">
-                    <label for="country" class="w-20 text-sm font-medium text-gray-700">Country:</label>
-                    <select id="country" class="flex-1 border border-gray-300 rounded-md p-2">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                    <label for="country" class="w-full sm:w-20 text-sm font-medium text-gray-700">Country:</label>
+                    <select id="country" class="flex-1 w-full min-w-0 border border-gray-300 rounded-md p-2">
                         <option value="AD">Andorra</option>
                         <option value="AE">United Arab Emirates</option>
                         <option value="AF">Afghanistan</option>
@@ -519,7 +519,7 @@
 
                 // Create modal content
                 var modalContent = document.createElement("div");
-                modalContent.className = "bg-white rounded-lg p-1 relative shadow-2xl";
+                modalContent.className = "bg-white rounded-lg p-1 relative shadow-2xl w-full max-w-4xl mx-4 h-[90vh] max-h-[930px] flex flex-col";
 
                 // Create close button
                 var closeButton = document.createElement("button");
@@ -530,10 +530,9 @@
                 // Create iframe
                 var iframe = document.createElement("iframe");
                 iframe.src = `https://${response.data.sandbox ? "sandbox-" : ""}secure.xsolla.com/paystation4/?token=${response.data.token}`;
-                iframe.width = "800";
-                iframe.height = "930";
                 iframe.allow = "clipboard-read; clipboard-write; payment";
-                iframe.className = "border-none rounded-lg";
+                iframe.className = "border-none rounded-lg w-full h-full flex-1";
+                iframe.style.minHeight = "600px";
 
                 // Assemble modal
                 modalContent.appendChild(closeButton);

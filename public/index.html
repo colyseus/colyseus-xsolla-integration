@@ -6,7 +6,7 @@
     <title>Colyseus + Xsolla Payments Integration</title>
 
     <!-- Colyseus Client SDK -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/colyseus.js@^0.16.0/dist/colyseus.js"></script> 
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/colyseus.js@^0.16.0/dist/colyseus.js"></script>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -31,7 +31,7 @@
 
         <!-- Xsolla Registration Button -->
         <div class="my-12 flex flex-col items-center">
-            <a href="#" target="_blank" class="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out" style="background: linear-gradient(to right, #6939f9, #8b5cf6);">
+            <a href="https://publisher.xsolla.com/signup?target_product=pay_station&utm_source=colyseus&utm_content=docs" target="_blank" class="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out" style="background: linear-gradient(to right, #6939f9, #8b5cf6);">
                 <div class="absolute inset-0 rounded-xl blur opacity-30 group-hover:opacity-50 transition-opacity duration-300" style="background: linear-gradient(to right, #6939f9, #8b5cf6);"></div>
                 <div class="relative flex items-center space-x-3">
                     <i class="fa-solid fa-user-plus text-xl"></i>
@@ -39,12 +39,13 @@
                     <i class="fa-solid fa-arrow-up-right-from-square text-sm opacity-80 group-hover:opacity-100 transition-opacity duration-300"></i>
                 </div>
             </a>
-            
-            <!-- Support Disclaimer -->
+
+            <!-- Support Disclaimer
             <div class="mt-3 flex items-center text-sm text-gray-600 bg-blue-50 border border-blue-200 rounded-lg px-4 py-2">
                 <i class="fa-solid fa-heart text-red-500 mr-2"></i>
                 <span>Registering through this link helps support the <strong>Colyseus</strong> project</span>
-            </div>
+            </div>-->
+
         </div>
 
         <p class="text-gray-600 mb-2">This is a simple integration of Colyseus and Xsolla.</p>
@@ -58,7 +59,7 @@
                 <h2 class="italic ml-8 text-sm">Such as: <i class="fa-solid fa-credit-card"></i> <code class="text-sm text-red-500">4111 1111 1111 1111</code> · Exp. date: <code class="text-sm text-red-500">12/40</code> · CVV2: any 3 digits.</h2>
         </ul>
 
-        <!-- Info Callout 
+        <!-- Info Callout
         <div class="bg-blue-50 border-l-4 border-blue-400 p-3 mb-4 rounded-lg">
             <div class="flex">
                 <div class="flex-shrink-0">
@@ -77,7 +78,7 @@
         <div class="bg-white rounded-lg shadow-lg border border-gray-200 p-4 sm:p-6 my-12">
             <h2 class="text-2xl font-bold text-gray-800 text-center mb-2">
                 <i class="fa-solid fa-cart-shopping text-yellow-500"></i>
-                Purchase 
+                Purchase
             </h2>
             <p class="text-gray-600 mb-4 text-center">Choose the type of purchase you want to test.</p>
 
@@ -101,7 +102,7 @@
 
             <fieldset class="mb-4 space-y-3 border border-gray-300 rounded-md p-3 sm:p-4 overflow-hidden">
                 <legend class="text-sm font-medium text-gray-700 px-2">User</legend>
-                
+
                 <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
                     <label for="userId" class="w-full sm:w-20 text-sm font-medium text-gray-700">User ID:</label>
                     <input type="text" id="userId" class="flex-1 w-full min-w-0 border border-gray-300 rounded-md p-2" value="1">
@@ -362,17 +363,17 @@
                     </select>
                 </div>
             </fieldset>
-            
+
             <div class="flex flex-col md:flex-row gap-4">
                 <!-- New Window Button -->
-                <button id="newWindowButton" onclick="openNewWindow()" 
+                <button id="newWindowButton" onclick="openNewWindow()"
                         class="flex-1 bg-blue-600 disabled:opacity-50 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 ease-in-out">
                     <i class="fa-solid fa-up-right-from-square"></i>
                     Pay in New Window
                 </button>
 
                 <!-- Iframe Button -->
-                <button id="iframeButton" onclick="openIframe()" 
+                <button id="iframeButton" onclick="openIframe()"
                         class="flex-1 bg-purple-600 disabled:opacity-50 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 ease-in-out">
                     <i class="fa-solid fa-square-arrow-up-right"></i>
                     Pay in iframe
@@ -388,7 +389,7 @@
                     var head = document.getElementsByTagName('head')[0];
                     head.appendChild(s);
                 </script>
-                <button id="embedWidgetButton" onclick="openPayStationWidget()" 
+                <button id="embedWidgetButton" onclick="openPayStationWidget()"
                         class="flex-1 bg-green-600 disabled:opacity-50 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 ease-in-out">
                     <i class="fa-solid fa-box-open"></i>
                     Pay in Embed Widget
@@ -426,21 +427,21 @@
             <button id="closeThankYouModal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold">
                 ×
             </button>
-            
+
             <!-- Modal content -->
             <div class="text-center">
                 <div class="mb-6">
                     <i class="fa-solid fa-check-circle text-green-500 text-6xl mb-4"></i>
                 </div>
-                
+
                 <h2 class="text-2xl font-bold text-gray-800 mb-4">
                     Thank You for Your Purchase!
                 </h2>
-                
+
                 <p class="text-gray-600 mb-6">
                     Your payment has been processed successfully. You will receive a confirmation email shortly.
                 </p>
-                
+
                 <button id="closeThankYouModalBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 ease-in-out">
                     Continue
                 </button>
@@ -475,7 +476,7 @@
                 window.addEventListener('message', postMessageListener);
                 XPayStationWidget.init({
                     access_token: response.data.token,
-                    sandbox: response.data.sandbox 
+                    sandbox: response.data.sandbox
                 });
                 XPayStationWidget.open();
 
@@ -538,14 +539,14 @@
                 modalContent.appendChild(closeButton);
                 modalContent.appendChild(iframe);
                 modal.appendChild(modalContent);
-                
+
                 // Add click-outside-to-close functionality
                 modal.onclick = function(event) {
                     if (event.target === modal) {
                         closePaymentModal();
                     }
                 };
-                
+
                 document.body.appendChild(modal);
 
             }).catch((error) => {
@@ -568,7 +569,7 @@
         function showThankYouModal() {
             const modal = document.getElementById("thankYouModal");
             modal.classList.remove("hidden");
-            
+
             // Add click-outside-to-close functionality
             modal.onclick = function(event) {
                 if (event.target === modal) {
@@ -586,11 +587,11 @@
         document.addEventListener('DOMContentLoaded', function() {
             const closeBtn1 = document.getElementById("closeThankYouModal");
             const closeBtn2 = document.getElementById("closeThankYouModalBtn");
-            
+
             if (closeBtn1) {
                 closeBtn1.addEventListener('click', closeThankYouModal);
             }
-            
+
             if (closeBtn2) {
                 closeBtn2.addEventListener('click', closeThankYouModal);
             }

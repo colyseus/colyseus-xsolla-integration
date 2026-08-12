@@ -1,34 +1,33 @@
-import { Room, Client } from "@colyseus/core";
-import { Schema, type } from "@colyseus/schema";
+import { Room, Client, CloseCode } from "colyseus";
+import { MyRoomState } from "./schema/MyRoomState.js";
 
-export class MyRoomState extends Schema {
-  @type("string") mySynchronizedProperty: string = "Hello world";
-}
-
-export class MyRoom extends Room<MyRoomState> {
+export class MyRoom extends Room {
   maxClients = 4;
   state = new MyRoomState();
+
+  messages = {
+    yourMessageType: (client: Client, message: any) => {
+      /**
+       * Handle "yourMessageType" message.
+       */
+    }
+  }
 
   onCreate (options: any) {
 
     this.presence.subscribe("order", (data: any) => {
-      const client = this.clients.getById(data.sessionId);
+      const client = this.clients.get(data.sessionId);
       client?.send("ordered", data.order);
     });
 
-    this.onMessage("type", (client, message) => {
-      //
-      // handle "type" message
-      //
-    });
   }
 
   onJoin (client: Client, options: any) {
     console.log(client.sessionId, "joined!");
   }
 
-  onLeave (client: Client, consented: boolean) {
-    console.log(client.sessionId, "left!");
+  onLeave (client: Client, code: CloseCode) {
+    console.log(client.sessionId, "left!", code);
   }
 
   onDispose() {

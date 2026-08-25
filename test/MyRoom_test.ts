@@ -2,11 +2,11 @@ import assert from "assert";
 import { ColyseusTestServer, boot } from "@colyseus/testing";
 
 // import your "app.config.ts" file here.
-import appConfig from "../src/app.config";
-import { MyRoomState } from "../src/rooms/schema/MyRoomState";
+import appConfig from "../src/app.config.js";
+import { MyRoomState } from "../src/rooms/schema/MyRoomState.js";
 
 describe("testing your Colyseus app", () => {
-  let colyseus: ColyseusTestServer;
+  let colyseus: ColyseusTestServer<typeof appConfig>;
 
   before(async () => colyseus = await boot(appConfig));
   after(async () => colyseus.shutdown());

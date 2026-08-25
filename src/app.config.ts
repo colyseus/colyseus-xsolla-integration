@@ -1,36 +1,33 @@
-import config from "@colyseus/tools";
+import { defineServer, defineRoom, monitor, playground } from "colyseus";
+import { auth } from "@colyseus/auth";
 import express from "express";
 
 /**
  * Config
  */
-import { authSettings } from "./config/auth.config";
+import { authSettings } from "./config/auth.config.js";
 
 /**
  * Routes
  */
-import { monitor } from "@colyseus/monitor";
-import { playground } from "@colyseus/playground";
-import { auth } from "@colyseus/auth";
-import { xsolla } from "./routes/xsolla";
+import { xsolla } from "./routes/xsolla.js";
 
 /**
  * Import your Room files
  */
-import { MyRoom } from "./rooms/MyRoom";
+import { MyRoom } from "./rooms/MyRoom.js";
 
 
-export default config({
+export default defineServer({
 
-    initializeGameServer: (gameServer) => {
-        /**
-         * Define your room handlers:
-         */
-        gameServer.define('my_room', MyRoom);
-
+    /**
+     * Define your room handlers:
+     */
+    rooms: {
+        my_room: defineRoom(MyRoom),
     },
 
-    initializeExpress: (app) => {
+    express: (app) => {
         /**
          * Xsolla webhook endpoint
          */
@@ -61,7 +58,7 @@ export default config({
         /**
          * Use @colyseus/monitor
          * It is recommended to protect this route with a password
-         * Read more: https://docs.colyseus.io/tools/monitor/#restrict-access-to-the-panel-using-a-password
+         * Read more: https://docs.colyseus.io/tools/monitoring/#restrict-access-to-the-panel-using-a-password
          */
         app.use("/monitor", monitor());
 
@@ -72,10 +69,4 @@ export default config({
         app.use(auth.prefix, auth.routes(authSettings));
     },
 
-
-    beforeListen: () => {
-        /**
-         * Before before gameServer.listen() is called.
-         */
-    }
 });
